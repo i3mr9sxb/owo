@@ -7,7 +7,7 @@ import fs from "fs";
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
-
+const MANUAL_MESSAGE = process.env.MANUAL_MESSAGE;
 // 保存したいユーザーID
 const TARGET_USER_ID = process.env.TARGET_USER_ID;
 
@@ -193,6 +193,12 @@ client.once("ready", async () => {
         await client.channels.fetch(CHANNEL_ID);
 
     const guild = channel.guild;
+
+    if (MANUAL_MESSAGE) {
+        await channel.send(MANUAL_MESSAGE);
+
+        return;
+    }
 
     await saveUserHistory(guild);
 
