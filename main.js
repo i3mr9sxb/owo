@@ -8,8 +8,6 @@ import fs from "fs";
 const TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
-console.log(TOKEN, CHANNEL_ID);
-
 // 保存したいユーザーID
 const TARGET_USER_ID = process.env.TARGET_USER_ID;
 
@@ -117,40 +115,81 @@ function shouldSend(slot) {
     return ok;
 }
 
-async function saveUserHistory(channel) {
-    const messages =
-        await channel.messages.fetch({
-            limit: 100
-        });
+async function saveUserHistory(guild) {
 
-    const history =
+    let history =
         loadJson("data/history.json", []);
 
-    for (const msg of messages.values()) {
-
-        if (msg.author.id !== TARGET_USER_ID) {
-            continue;
-        }
-
-        // 重複防止
-        if (history.some(x => x.id === msg.id)) {
-            continue;
-        }
-
-        history.push({
-            id: msg.id,
-            content: msg.content,
-            createdAt: msg.createdAt,
-            channelId: msg.channel.id
-        });
+    if (!Array.isArray(history)) {
+        history = [];
     }
 
-    history.sort((a, b) =>
-        new Date(a.createdAt)
-        - new Date(b.createdAt)
+    const textChannels =
+        guild.channels.cache.filter(
+            ch =>
+                ch.isTextBased() &&
+                ch.viewable
+        );
+
+    for (const channel of textChannels.values()) {
+
+        console.log(
+            `checking #${channel.name}`
+        );
+
+        try {
+
+            const messages =
+                await channel.messages.fetch({
+                    limit: 100
+                });
+
+            for (const msg of messages.values()) {
+
+                if (
+                    msg.author.id !== TARGET_USER_ID
+                ) {
+                    continue;
+                }
+
+                if (
+                    history.some(
+                        x => x.id === msg.id
+                    )
+                ) {
+                    continue;
+                }
+
+                history.push({
+                    id: msg.id,
+                    content: msg.content,
+                    createdAt: msg.createdAt,
+                    channelId: msg.channel.id,
+                    channelName: msg.channel.name
+                });
+
+            }
+
+        } catch (e) {
+
+            console.log(
+                `failed ${channel.name}`,
+                e.message
+            );
+
+        }
+    }
+
+    history.sort(
+        (a, b) =>
+            new Date(a.createdAt)
+            - new Date(b.createdAt)
     );
 
-    saveJson("data/history.json", history);
+    saveJson(
+        "data/history.json",
+        history
+    );
 }
 
 client.once("ready", async () => {
@@ -160,8 +199,9 @@ client.once("ready", async () => {
     const channel =
         await client.channels.fetch(CHANNEL_ID);
 
-    // 履歴保存
-    await saveUserHistory(channel);
+    const guild = channel.guild;
+
+    await saveUserHistory(guild);
 
     // ランダム送信
     const slot =
