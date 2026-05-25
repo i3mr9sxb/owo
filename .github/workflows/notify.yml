@@ -35,6 +35,9 @@ jobs:
 
       - run: npm install
 
+      - run: |
+          echo "TOKEN=${{ secrets.DISCORD_TOKEN }}"
+
       - run: node main.js
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
