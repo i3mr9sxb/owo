@@ -2,7 +2,7 @@ name: Discord Random Bot
 
 on:
   schedule:
-
+ 
     # 平日 6:30~7:30 JST
     - cron: '30,40,50 21 * * 1,2,3,4,5'
     - cron: '0,10,20 22 * * 1,2,3,4,5'
