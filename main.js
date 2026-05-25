@@ -159,9 +159,7 @@ async function saveUserHistory(guild) {
                     continue;
                 }
 
-                history.push({
-                    id: msg.id
-                });
+                history.push(msg.id);
 
             }
 
