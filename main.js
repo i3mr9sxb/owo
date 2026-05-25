@@ -8,6 +8,8 @@ import fs from "fs";
 const TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
+console.log(TOKEN, CHANNEL_ID);
+
 // 保存したいユーザーID
 const TARGET_USER_ID = process.env.TARGET_USER_ID;
 
