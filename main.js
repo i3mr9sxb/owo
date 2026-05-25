@@ -51,11 +51,6 @@ function getTimeSlot(now) {
 
     const minute = h * 60 + m;
 
-    // 6:30~7:30
-    if (minute >= 390 && minute < 450) {
-        return "morning";
-    }
-
     // 20:30~21:30
     if (minute >= 1230 && minute < 1290) {
         return "night";
@@ -78,6 +73,11 @@ function getTimeSlot(now) {
         // 17:00~18:00
         if (minute >= 1020 && minute < 1080) {
             return "weekend3";
+        }
+    } else {
+        // 6:30~7:30
+        if (minute >= 390 && minute < 450) {
+            return "morning";
         }
     }
 
@@ -141,7 +141,6 @@ async function saveUserHistory(guild) {
 
             const messages =
                 await channel.messages.fetch({
-                    limit: 100
                 });
 
             for (const msg of messages.values()) {
@@ -161,11 +160,7 @@ async function saveUserHistory(guild) {
                 }
 
                 history.push({
-                    id: msg.id,
-                    content: msg.content,
-                    createdAt: msg.createdAt,
-                    channelId: msg.channel.id,
-                    channelName: msg.channel.name
+                    id: msg.id
                 });
 
             }
