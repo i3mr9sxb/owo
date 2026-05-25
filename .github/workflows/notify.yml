@@ -1,0 +1,42 @@
+name: Discord Random Bot
+
+on:
+  schedule:
+
+    # 平日 6:30~7:30 JST
+    - cron: '30,40,50 21 * * 1,2,3,4,5'
+    - cron: '0,10,20 22 * * 1,2,3,4,5'
+
+    # 20:30~21:30 JST
+    - cron: '30,40,50 11 * * *'
+    - cron: '0,10,20 12 * * *'
+
+    # 土日 10:00~11:00 JST
+    - cron: '0,10,20,30,40,50 1 * * 6,0'
+
+    # 土日 13:00~14:00 JST
+    - cron: '0,10,20,30,40,50 4 * * 6,0'
+
+    # 土日 17:00~18:00 JST
+    - cron: '0,10,20,30,40,50 8 * * 6,0'
+
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: node main.js
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          TARGET_USER_ID: ${{ secrets.TARGET_USER_ID }}
