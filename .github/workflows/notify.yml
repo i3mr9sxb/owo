@@ -1,13 +1,16 @@
 name: Discord Random Bot
 
+permissions:
+  contents: write
+
 on:
   schedule:
- 
-    # 平日 6:30~7:30 JST
-    - cron: '30,40,50 21 * * 1,2,3,4,5'
-    - cron: '0,10,20 22 * * 1,2,3,4,5'
 
-    # 20:30~21:30 JST
+    # 平日 6:30~7:30 JST
+    - cron: '30,40,50 21 * * 1-5'
+    - cron: '0,10,20 22 * * 1-5'
+
+    # 毎日 20:30~21:30 JST
     - cron: '30,40,50 11 * * *'
     - cron: '0,10,20 12 * * *'
 
@@ -19,13 +22,14 @@ on:
 
     # 土日 17:00~18:00 JST
     - cron: '0,10,20,30,40,50 8 * * 6,0'
-    
-    workflow_dispatch:
-      inputs:
-        message:
-          description: 'Send message'
-          required: false
-          default: ''
+
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Send message'
+        required: false
+        default: ''
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -46,8 +50,8 @@ jobs:
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          MANUAL_MESSAGE: ${{ github.event.inputs.message }}
           TARGET_USER_ID: ${{ secrets.TARGET_USER_ID }}
+          MANUAL_MESSAGE: ${{ github.event.inputs.message }}
 
       - name: Commit files
         run: |
@@ -56,6 +60,6 @@ jobs:
 
           git add data/
 
-          git commit -m "update history" || echo "nothing to commit"
+          git commit -m "update history [skip ci]" || echo "nothing to commit"
 
           git push
