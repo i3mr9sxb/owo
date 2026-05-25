@@ -142,9 +142,7 @@ async function saveUserHistory(guild) {
         try {
 
             const messages =
-                await channel.messages.fetch({
-                    limit: 10000
-                });
+                await channel.messages.fetch();
 
             for (const msg of messages.values()) {
 
