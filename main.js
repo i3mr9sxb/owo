@@ -11,7 +11,7 @@ const MANUAL_MESSAGE = process.env.MANUAL_MESSAGE;
 // 保存したいユーザーID
 const TARGET_USER_ID = process.env.TARGET_USER_ID;
 
-const HISTORY = undefined;
+let HISTORY = undefined;
 
 const client = new Client({
     intents: [
