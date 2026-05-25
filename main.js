@@ -11,6 +11,8 @@ const MANUAL_MESSAGE = process.env.MANUAL_MESSAGE;
 // 保存したいユーザーID
 const TARGET_USER_ID = process.env.TARGET_USER_ID;
 
+const HISTORY = undefined;
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -141,6 +143,7 @@ async function saveUserHistory(guild) {
 
             const messages =
                 await channel.messages.fetch({
+                    limit: 10000
                 });
 
             for (const msg of messages.values()) {
@@ -183,6 +186,8 @@ async function saveUserHistory(guild) {
         "data/history.json",
         history
     );
+
+    HISTORY = history;
 }
 
 client.once("ready", async () => {
@@ -208,9 +213,12 @@ client.once("ready", async () => {
         getTimeSlot(getJSTDate());
 
     if (shouldSend(slot)) {
+        if (!HISTORY) {
+            HISTORY = loadJson("data/history.json", []);
+        }
 
         await channel.send(
-            "ランダム通知です！"
+            HISTORY[Math.floor(Math.random() * HISTORY.length)]
         );
 
         console.log("message sent");
