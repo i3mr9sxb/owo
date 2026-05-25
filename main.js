@@ -152,14 +152,6 @@ async function saveUserHistory(guild) {
                     continue;
                 }
 
-                if (
-                    history.some(
-                        x => x.id === msg.id
-                    )
-                ) {
-                    continue;
-                }
-
                 history.push(msg.content);
 
             }
@@ -173,12 +165,6 @@ async function saveUserHistory(guild) {
 
         }
     }
-
-    history.sort(
-        (a, b) =>
-            new Date(a.createdAt)
-            - new Date(b.createdAt)
-    );
 
     saveJson(
         "data/history.json",
