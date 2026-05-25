@@ -40,3 +40,14 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
           TARGET_USER_ID: ${{ secrets.TARGET_USER_ID }}
+
+      - name: Commit files
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+
+          git add data/
+
+          git commit -m "update history" || echo "nothing to commit"
+
+          git push
