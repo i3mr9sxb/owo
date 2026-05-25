@@ -197,6 +197,7 @@ client.once("ready", async () => {
     if (MANUAL_MESSAGE) {
         await channel.send(MANUAL_MESSAGE);
 
+        client.destroy();
         return;
     }
 
